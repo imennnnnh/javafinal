@@ -1,0 +1,703 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<title>Food Delivery System</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+
+<style>
+/* ===== 全局設定 ===== */
+:root {
+    --primary-color: #4CAF50;
+    --primary-dark: #388E3C;
+    --secondary-color: #ff9800;
+    --danger-color: #d32f2f;
+    --danger-gradient: linear-gradient(135deg, #ef5350, #c62828);
+    --bg-color: #f0f2f5;
+    --card-bg: #ffffff;
+    --text-color: #333;
+    --text-light: #666;
+    --shadow-sm: 0 2px 8px rgba(0,0,0,0.08);
+    --shadow-md: 0 4px 12px rgba(0,0,0,0.12);
+    --shadow-hover: 0 8px 24px rgba(0,0,0,0.15);
+    --radius: 12px;
+}
+
+body {
+    font-family: 'Poppins', 'Noto Sans TC', sans-serif;
+    background: var(--bg-color);
+    padding: 40px 20px;
+    color: var(--text-color);
+    line-height: 1.6;
+    margin: 0;
+}
+
+h1, h2, h3 {
+    text-align: center;
+    color: #2c3e50;
+    margin-bottom: 20px;
+}
+
+h1 {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 40px;
+    letter-spacing: 1px;
+    text-shadow: 2px 2px 0px rgba(0,0,0,0.05);
+}
+
+h2 {
+    font-size: 1.5rem;
+    border-left: 5px solid var(--primary-color);
+    padding-left: 15px;
+    text-align: left;
+    margin-top: 0;
+}
+
+.container {
+    max-width: 1100px;
+    margin: auto;
+}
+
+/* ===== 搜尋區域 ===== */
+.search-wrapper {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 40px;
+    background: white;
+    padding: 20px;
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-sm);
+}
+
+#searchInput {
+    padding: 12px 20px;
+    width: 60%;
+    border: 2px solid #e0e0e0;
+    border-radius: 50px;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+    outline: none;
+}
+
+#searchInput:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.2);
+}
+
+/* ===== 按鈕通用樣式 ===== */
+button {
+    padding: 10px 20px;
+    border: none;
+    background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+    color: white;
+    border-radius: 50px;
+    font-size: 1rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+    box-shadow: 0 4px 6px rgba(76, 175, 80, 0.3);
+    position: relative;
+    overflow: hidden;
+}
+
+button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 7px 14px rgba(76, 175, 80, 0.4);
+    filter: brightness(1.1);
+}
+
+button:active {
+    transform: translateY(1px) scale(0.98);
+    box-shadow: 0 2px 4px rgba(76, 175, 80, 0.3);
+}
+
+#searchBtn {
+    border-radius: 50px;
+    padding: 10px 30px;
+}
+
+/* ===== 菜單卡片 ===== */
+.menu {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 30px;
+    margin-bottom: 50px;
+}
+
+.card {
+    background: var(--card-bg);
+    padding: 25px;
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-sm);
+    transition: all 0.3s ease;
+    border: 1px solid transparent;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.card:hover {
+    transform: translateY(-8px);
+    box-shadow: var(--shadow-hover);
+    border-color: rgba(76, 175, 80, 0.2);
+}
+
+.card h3 {
+    margin: 0 0 10px 0;
+    font-size: 1.3rem;
+    text-align: left;
+    color: #333;
+}
+
+.card p {
+    margin: 5px 0;
+    color: var(--text-light);
+    font-size: 0.95rem;
+}
+
+.card button {
+    margin-top: 15px;
+    width: 100%;
+    border-radius: 8px;
+    background: white;
+    color: var(--primary-color);
+    border: 2px solid var(--primary-color);
+    box-shadow: none;
+}
+
+.card button:hover {
+    background: var(--primary-color);
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(76, 175, 80, 0.3);
+}
+
+/* ===== 通用區塊 ===== */
+.section {
+    margin-top: 40px;
+    background: white;
+    padding: 30px;
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-md);
+    animation: fadeIn 0.6s ease-out;
+}
+
+ul {
+    list-style: none;
+    padding: 0;
+}
+
+ul li {
+    padding: 15px;
+    border-bottom: 1px solid #eee;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: background 0.2s;
+}
+
+ul li:last-child {
+    border-bottom: none;
+}
+
+ul li:hover {
+    background-color: #fafafa;
+}
+
+/* 評論區塊 */
+#reviewSection div {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 15px;
+    background: #f9f9f9;
+    margin-bottom: 10px !important;
+    border-radius: 8px;
+    border: 1px solid #eee;
+}
+
+select {
+    padding: 8px 12px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    font-family: inherit;
+    margin: 0 15px;
+    cursor: pointer;
+    flex-grow: 0; /* 讓選單不要撐太開 */
+}
+
+/* ===== 管理員專區特別樣式 ===== */
+.section[style*="background-color: #fff5f5"] {
+    background: #fff;
+    border: 2px dashed var(--danger-color) !important;
+    position: relative;
+    overflow: hidden;
+}
+
+.section[style*="background-color: #fff5f5"]::before {
+    content: "";
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(255, 0, 0, 0.03);
+    z-index: 0;
+    pointer-events: none;
+}
+
+.section[style*="background-color: #fff5f5"] h2 {
+    color: var(--danger-color) !important;
+    border-left-color: var(--danger-color);
+    position: relative;
+    z-index: 1;
+}
+
+.section[style*="background-color: #fff5f5"] p {
+    position: relative;
+    z-index: 1;
+    color: #666;
+}
+
+#clearReviewsBtn {
+    background: var(--danger-gradient) !important;
+    color: white !important;
+    box-shadow: 0 4px 10px rgba(211, 47, 47, 0.3);
+    position: relative;
+    z-index: 1;
+}
+
+#clearReviewsBtn:hover {
+    box-shadow: 0 8px 20px rgba(211, 47, 47, 0.5);
+    transform: translateY(-2px);
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+</style>
+</head>
+
+<body>
+<div class="container">
+
+    <h1>🍔 Food Delivery System</h1>
+
+    <div class="search-wrapper">
+        <input id="searchInput" placeholder="搜尋想吃的美食...">
+        <button id="searchBtn">搜尋</button>
+    </div>
+
+    <h2>📋 美味菜單</h2>
+    <div id="menu" class="menu"></div>
+
+    <div class="section">
+        <h2>🛒 您的購物車</h2>
+        <ul id="cartList">
+            <li style="justify-content: center; color: #999;">購物車目前是空的</li>
+        </ul>
+        
+        <div style="text-align: right; margin-top: 20px; padding-top: 15px; border-top: 2px dashed #eee; font-size: 1.2rem; font-weight: 600; color: #333;">
+            總金額：<span style="color: #d32f2f; font-size: 1.4rem;">$<span id="cartTotal">0</span></span>
+        </div>
+
+        <button id="submitOrderBtn" style="width: 100%; margin-top: 20px;">送出訂單</button>
+    </div>
+
+    <div class="section">
+        <h2>⭐ 餐點評分</h2>
+        <div id="reviewSection">
+             <p style="text-align: center; color: #999;">送出訂單後即可在此評分</p>
+        </div>
+        <div id="submitAllBtnContainer" style="display: none; text-align: right; margin-top: 20px;">
+            <button id="submitAllReviewsBtn" style="width: 100%; background: linear-gradient(135deg, #FF9800, #F57C00);">🚀 送出所有評分</button>
+        </div>
+    </div>
+
+    <div class="section">
+        <h2>📦 歷史訂單紀錄</h2>
+        <ul id="orderList"></ul>
+    </div>
+
+    <div class="section" style="border: 1px solid #ffcccc; background-color: #fff5f5;">
+        <h2 style="color: #d32f2f;">⚠️ 管理員專區</h2>
+        <p>此按鈕將會永久刪除資料庫內所有的評分與留言資料，且無法復原。</p>
+        <button id="clearReviewsBtn" style="background-color: #d32f2f; color: white; border: none; cursor: pointer;">🛑 一鍵清除所有評分紀錄</button>
+    </div>
+
+</div>
+
+<script>
+const MENU_API = "http://localhost:8080/api/menu"; // Service A
+const ORDER_API = "http://localhost:8081/orders";   // Service B
+const REVIEW_API = "http://localhost:8082/api/reviews"; // Service C
+
+let cart = [];
+
+/* ===== 菜單 ===== */
+async function loadMenu() {
+    try {
+        const res = await fetch(MENU_API);
+        const data = await res.json();
+        const menuDiv = document.getElementById("menu");
+        menuDiv.innerHTML = "";
+
+        for (const meal of data) {
+            const rating = await getRating(meal.id);
+            const card = document.createElement("div");
+            card.className = "card";
+
+            card.innerHTML = `
+                <h3>${meal.name}</h3>
+                <p>價格：<span style="color: #d32f2f; font-weight: bold;">$${meal.price}</span></p>
+                <p>⭐ 平均評分：${rating.toFixed(1)}</p>
+            `;
+            const button = document.createElement("button");
+            button.textContent = "加入購物車";
+            button.addEventListener("click", () => addToCart(meal));
+            card.appendChild(button);
+
+            menuDiv.appendChild(card);
+        }
+    } catch(err) {
+        console.error("載入菜單失敗:", err);
+    }
+}
+
+/* ===== 搜尋 ===== */
+document.getElementById("searchBtn").addEventListener("click", async () => {
+    const name = document.getElementById("searchInput").value;
+    try {
+        const res = await fetch(`${MENU_API}/search?name=${encodeURIComponent(name)}`);
+        const data = await res.json();
+        const menuDiv = document.getElementById("menu");
+        menuDiv.innerHTML = "";
+
+        for (const meal of data) {
+            const rating = await getRating(meal.id);
+            const card = document.createElement("div");
+            card.className = "card";
+            card.innerHTML = `
+                <h3>${meal.name}</h3>
+                <p>價格：<span style="color: #d32f2f; font-weight: bold;">$${meal.price}</span></p>
+                <p>⭐ 平均評分：${rating.toFixed(1)}</p>
+            `;
+            const button = document.createElement("button");
+            button.textContent = "加入購物車";
+            button.addEventListener("click", () => addToCart(meal));
+            card.appendChild(button);
+            menuDiv.appendChild(card);
+        }
+    } catch(err) {
+        console.error("搜尋失敗:", err);
+        alert("搜尋失敗，請確認後端服務是否啟動");
+    }
+});
+
+/* ===== 購物車 ===== */
+/* ===== 購物車（同品項合併 + 數量） ===== */
+// cart = [{ mealId, name, price, quantity }]
+function addToCart(meal) {
+    const existing = cart.find(i => i.mealId === meal.id);
+    if (existing) {
+        existing.quantity += 1;
+    } else {
+        cart.push({
+            mealId: meal.id,
+            name: meal.name,
+            price: meal.price,
+            quantity: 1
+        });
+    }
+    renderCart();
+}
+
+function increaseQty(mealId) {
+    const item = cart.find(i => i.mealId === mealId);
+    if (!item) return;
+    item.quantity += 1;
+    renderCart();
+}
+
+function decreaseQty(mealId) {
+    const item = cart.find(i => i.mealId === mealId);
+    if (!item) return;
+
+    item.quantity -= 1;
+    if (item.quantity <= 0) {
+        cart = cart.filter(i => i.mealId !== mealId);
+    }
+    renderCart();
+}
+
+// 直接移除整個品項（不管數量）
+function removeItem(mealId) {
+    cart = cart.filter(i => i.mealId !== mealId);
+    renderCart();
+}
+
+function renderCart() {
+    const ul = document.getElementById("cartList");
+    const totalSpan = document.getElementById("cartTotal");
+
+    ul.innerHTML = "";
+    let total = 0;
+
+    if (cart.length === 0) {
+        ul.innerHTML = '<li style="justify-content: center; color: #999;">購物車目前是空的</li>';
+        totalSpan.textContent = "0";
+        return;
+    }
+
+    cart.forEach(item => {
+        const subtotal = item.price * item.quantity;
+        total += subtotal;
+
+        const li = document.createElement("li");
+        li.innerHTML = `
+            <div style="display:flex; flex-direction:column; gap:4px; flex:1;">
+                <span>${item.name}</span>
+                <span style="color:#666; font-size:0.9em;">
+                    單價 $${item.price} × ${item.quantity}
+                </span>
+            </div>
+
+            <div style="display:flex; align-items:center; gap:8px;">
+                <button style="padding:6px 12px; border-radius:8px;" onclick="decreaseQty('${item.mealId}')">-</button>
+                <span style="min-width:24px; text-align:center; font-weight:600;">${item.quantity}</span>
+                <button style="padding:6px 12px; border-radius:8px;" onclick="increaseQty('${item.mealId}')">+</button>
+
+                <span style="font-weight:bold; min-width:80px; text-align:right;">$${subtotal}</span>
+
+                <button onclick="removeItem('${item.mealId}')" style="padding:8px 14px; background: var(--danger-gradient);">
+                    移除
+                </button>
+            </div>
+        `;
+        ul.appendChild(li);
+    });
+
+    totalSpan.textContent = total;
+}
+
+
+
+/* ===== 訂單 ===== */
+document.getElementById("submitOrderBtn").addEventListener("click", async () => {
+    if(cart.length === 0) {
+        alert("購物車是空的！");
+        return;
+    }
+
+const orderItems = cart.map(i => ({
+    mealId: i.mealId,
+    quantity: i.quantity,
+    mealName: i.name
+}));
+
+    
+    const orderRequest = { items: orderItems };
+
+    try {
+        const res = await fetch(ORDER_API, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(orderRequest)
+        });
+
+        if (res.ok) {
+            alert("✅ 訂單已成功送出，請為餐點評分！");
+            cart = [];
+            renderCart(); 
+            loadOrders();
+
+            // 去重複：只留不重複的餐點供評分
+            const uniqueItemsMap = new Map();
+            orderItems.forEach(item => {
+                if (!uniqueItemsMap.has(item.mealId)) {
+                    uniqueItemsMap.set(item.mealId, item);
+                }
+            });
+            const uniqueItems = Array.from(uniqueItemsMap.values());
+            showReviewSection(uniqueItems);
+        } else {
+            let text;
+            try { text = await res.text(); } catch { text = "<無回傳內容>"; }
+            alert(`❌ 訂單送出失敗！HTTP ${res.status}\n訊息: ${text}`);
+        }
+    } catch(err) {
+        console.error("送出訂單 fetch 發生錯誤:", err);
+        alert(`❌ 訂單送出失敗！可能原因:\n- 後端未啟動\n- CORS 限制\n- Port/網路錯誤\n\n詳細錯誤: ${err}`);
+    }
+});
+
+/* ===== 訂單列表 (合併同品項數量) ===== */
+async function loadOrders() {
+    try {
+        const res = await fetch(ORDER_API);
+        const data = await res.json();
+        const ul = document.getElementById("orderList");
+        ul.innerHTML = "";
+
+        data.forEach(o => {
+            const li = document.createElement("li");
+            
+            // 合併相同品項
+            const itemSummary = {}; 
+            o.items.forEach(i => {
+                const id = i.mealId;
+                const name = i.mealName ? i.mealName : '餐點' + id;
+                const qty = i.quantity;
+
+                if (itemSummary[id]) {
+                    itemSummary[id].count += qty;
+                } else {
+                    itemSummary[id] = { name: name, count: qty };
+                }
+            });
+
+            const itemsDisplay = Object.values(itemSummary)
+                .map(item => `${item.name} x${item.count}`)
+                .join("、");
+
+            li.innerHTML = `
+                <div style="display:flex; flex-direction:column;">
+                    <span style="color: #999; font-size: 0.85em; margin-bottom: 2px;">訂單 #${o.id}</span>
+                    <span style="color: #333; font-weight: 500;">${itemsDisplay}</span>
+                </div>
+                <div style="color: #d32f2f; font-weight: bold; font-size: 1.2em;">
+                    $${o.totalAmount}
+                </div>
+            `;
+            ul.appendChild(li);
+        });
+    } catch(err) {
+        console.error("載入訂單失敗:", err);
+    }
+}
+
+/* ===== 評分 (修改重點：改為批次送出) ===== */
+function showReviewSection(items) {
+    const div = document.getElementById("reviewSection");
+    const btnContainer = document.getElementById("submitAllBtnContainer");
+    
+    div.innerHTML = "";
+    
+    // 如果沒有項目可評，隱藏按鈕並顯示提示
+    if (!items || items.length === 0) {
+        div.innerHTML = '<p style="text-align: center; color: #999;">暫無待評分項目</p>';
+        btnContainer.style.display = "none";
+        return;
+    }
+
+    // 產生每一個評分條目（只放選單，不放個別按鈕）
+    items.forEach(item => {
+        const box = document.createElement("div");
+        
+        const nameSpan = document.createElement("span");
+        nameSpan.textContent = item.mealName ? item.mealName : `餐點ID ${item.mealId}`;
+        nameSpan.style.fontWeight = "500";
+        nameSpan.style.flex = "1"; // 讓名稱佔據左邊空間
+
+        const select = document.createElement("select");
+        // 加入特定的 class，方便等等一次抓取所有選單
+        select.className = "rating-select"; 
+        select.dataset.mealId = item.mealId; // 把 ID 藏在 dataset 裡
+        
+        [5,4,3,2,1].forEach(n => {
+            const opt = document.createElement("option");
+            opt.value = n;
+            opt.textContent = `${n} ⭐`;
+            select.appendChild(opt);
+        });
+
+        box.appendChild(nameSpan);
+        box.appendChild(select);
+        div.appendChild(box);
+    });
+
+    // 顯示「送出所有評分」按鈕
+    btnContainer.style.display = "block";
+}
+
+// 綁定「送出所有評分」按鈕的事件
+document.getElementById("submitAllReviewsBtn").addEventListener("click", async () => {
+    // 1. 抓取畫面上所有的評分選單
+    const selects = document.querySelectorAll('.rating-select');
+    
+    if (selects.length === 0) return;
+
+    // 2. 準備發送請求
+    const promises = [];
+    
+    selects.forEach(select => {
+        const mealId = select.dataset.mealId;
+        const rating = parseInt(select.value);
+
+        // 建立單一請求的 Promise，並放入陣列
+        const request = fetch(REVIEW_API, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ mealId, rating })
+        });
+        promises.push(request);
+    });
+
+    // 3. 使用 Promise.all 等待所有請求完成
+    try {
+        await Promise.all(promises);
+        
+        // 全部成功後
+        alert("🎉 所有評分已成功送出！感謝您的回饋。");
+        
+        // 清空評分區
+        document.getElementById("reviewSection").innerHTML = '<p style="text-align: center; color: #4CAF50;">✅ 評分已完成</p>';
+        document.getElementById("submitAllBtnContainer").style.display = "none";
+        
+        // 更新菜單上的平均分數
+        loadMenu(); 
+
+    } catch (err) {
+        console.error("批次評分失敗:", err);
+        alert("⚠️ 部分評分可能送出失敗，請檢查網路連線。");
+    }
+});
+
+async function getRating(mealId) {
+    try {
+        const res = await fetch(`${REVIEW_API}/average/${mealId}`);
+        return await res.json();
+    } catch {
+        return 0;
+    }
+}
+
+/* ===== 管理員功能：清除所有評分 ===== */
+document.getElementById("clearReviewsBtn").addEventListener("click", async () => {
+    const isConfirmed = confirm("【警告】您確定要刪除所有的評分紀錄嗎？\n此動作無法復原！");
+    if (isConfirmed) {
+        try {
+            const res = await fetch(`${REVIEW_API}/clear`, {
+                method: "DELETE"
+            });
+            if (res.ok) {
+                const msg = await res.text();
+                alert(`✅ ${msg}`); 
+                loadMenu(); 
+            } else {
+                alert("❌ 清除失敗！請確認後端是否正常運作。");
+            }
+        } catch (err) {
+            console.error("清除評分時發生錯誤:", err);
+            alert("❌ 清除失敗！無法連接到伺服器。");
+        }
+    }
+});
+
+/* ===== 初始化 ===== */
+loadMenu();
+loadOrders();
+</script>
+</body>
+</html>
